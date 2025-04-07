@@ -17,7 +17,7 @@ import { CheckboxModule } from 'primeng/checkbox';
   selector: 'app-quote-builder',
   standalone: true,
   templateUrl: './quote-builder.component.html',
-  styleUrl: './quote-builder.component.scss',
+  styleUrls: ['./quote-builder.component.scss'],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -31,11 +31,13 @@ import { CheckboxModule } from 'primeng/checkbox';
 })
 export class QuoteBuilderComponent {
   form: FormGroup;
+  QuoteItemFactory: QuoteItemFactory;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       lines: this.fb.array([]),
     });
+    this.QuoteItemFactory = new QuoteItemFactory(this.fb);
   }
 
   get lines(): FormArray {
@@ -52,17 +54,19 @@ export class QuoteBuilderComponent {
   createLine(
     item: string = '',
     unitType: string = 'number',
+    units: number = 0,
     pricePerUnit: number = 0
   ): FormGroup {
     return this.fb.group({
       item: [item],
       unitType: [unitType],
+      units: [units],
       pricePerUnit: [pricePerUnit],
       selected: [false],
     });
   }
 
-  addLine(item = '', unitType = 'number', pricePerUnit = 0): void {
+  addLine(item = '', unitType = 'number', units = 0, pricePerUnit = 0): void {
     this.lines.push(this.createLine(item, unitType, pricePerUnit));
   }
 
@@ -79,7 +83,7 @@ export class QuoteBuilderComponent {
   }
 
   addKitchenBlueprint(): void {
-    this.addLine('Kitchen Blueprint', 'area', 0);
+    this.addLine('Kitchen Blueprint', 'area', 0, 0);
   }
 
   quoteItemOptions = [
@@ -89,9 +93,118 @@ export class QuoteBuilderComponent {
       command: () => this.addKitchenBlueprint(),
     },
     {
-      label: 'Remove Selected Lines',
-      icon: 'pi pi-trash',
-      command: () => this.removeSelectedLines(),
+      label: 'Add Construction and Demolition',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(
+            QuoteItemTypes.ConstructionAndDemolition
+          )
+        ),
+    },
+    {
+      label: 'Add Furniture Layout',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.FurnitureLayout)
+        ),
+    },
+    {
+      label: 'Add Electrical Plan',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.ElectricalPlan)
+        ),
+    },
+    {
+      label: 'Add Plumbing Plan',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.PlumbingPlan)
+        ),
+    },
+    {
+      label: 'Add HVAC Plan',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(this.QuoteItemFactory.createLine(QuoteItemTypes.HVACPlan)),
+    },
+    {
+      label: 'Add Ceiling and Lighting Plan',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(
+            QuoteItemTypes.CeilingAndLightingPlan
+          )
+        ),
+    },
+    {
+      label: 'Add Kitchen Carpentry',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.KitchenCarpentry)
+        ),
+    },
+    {
+      label: 'Add Dressing Room Carpentry',
+      icon: 'pi pi-plus',
+      command: () =>
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.DressingRoomCarpentry)
+        ),
     },
   ];
+}
+
+export enum QuoteItemTypes {
+  ConstructionAndDemolition = 'constructionAndDemolition',
+  FurnitureLayout = 'furnitureLayout',
+  ElectricalPlan = 'electricalPlan',
+  PlumbingPlan = 'plumbingPlan',
+  HVACPlan = 'hvacPlan',
+  CeilingAndLightingPlan = 'ceilingAndLightingPlan',
+  KitchenCarpentry = 'kitchenCarpentry',
+  DressingRoomCarpentry = 'dressingRoomCarpentry',
+}
+
+export class QuoteItemFactory {
+  constructor(private fb: FormBuilder) {}
+
+  public createLine(itemType: QuoteItemTypes): FormGroup {
+    switch (itemType) {
+      case QuoteItemTypes.ConstructionAndDemolition:
+        return this.createLineWithDefaults('Construction and Demolition');
+      case QuoteItemTypes.FurnitureLayout:
+        return this.createLineWithDefaults('Furniture Layout');
+      case QuoteItemTypes.ElectricalPlan:
+        return this.createLineWithDefaults('Electrical Plan');
+      case QuoteItemTypes.PlumbingPlan:
+        return this.createLineWithDefaults('Plumbing Plan');
+      case QuoteItemTypes.HVACPlan:
+        return this.createLineWithDefaults('HVAC Plan');
+      case QuoteItemTypes.CeilingAndLightingPlan:
+        return this.createLineWithDefaults('Ceiling and Lighting Plan');
+      case QuoteItemTypes.KitchenCarpentry:
+        return this.createLineWithDefaults('Kitchen Carpentry');
+      case QuoteItemTypes.DressingRoomCarpentry:
+        return this.createLineWithDefaults('Dressing Room Carpentry');
+      default:
+        throw new Error('Invalid item type');
+    }
+  }
+
+  private createLineWithDefaults(label: string): FormGroup {
+    return this.fb.group({
+      item: [label],
+      unitType: ['area'],
+      units: [0],
+      pricePerUnit: [0],
+      selected: [false],
+    });
+  }
 }

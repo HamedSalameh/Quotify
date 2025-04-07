@@ -19,6 +19,7 @@
             <th>Select</th>
             <th>Item</th>
             <th>Unit Type</th>
+            <th>Units</th>
             <th>Price/Unit</th>
             <th>Actions</th>
           </tr>
@@ -34,6 +35,14 @@
             </td>
             <td>{{ group.get('item')?.value }}</td>
             <td>{{ group.get('unitType')?.value }}</td>
+            <td>
+              <input
+                pInputText
+                formControlName="units"
+                type="number"
+                class="w-full"
+              />
+            </td>
             <td>
               <input
                 pInputText
