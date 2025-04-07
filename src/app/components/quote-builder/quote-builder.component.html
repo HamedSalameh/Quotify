@@ -1,0 +1,61 @@
+<div class="p-4">
+  <p-card header="Quote Builder">
+    <form [formGroup]="form">
+      <p-splitButton
+        label="Add Item"
+        icon="pi pi-plus"
+        [model]="quoteItemOptions"
+        class="mb-3"
+      ></p-splitButton>
+
+      <p-table
+        [value]="lines.controls"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20]"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Select</th>
+            <th>Item</th>
+            <th>Unit Type</th>
+            <th>Price/Unit</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-group let-i="rowIndex">
+          <tr [formGroup]="group">
+            <td>
+              <p-checkbox
+                formControlName="selected"
+                binary="true"
+              ></p-checkbox>
+            </td>
+            <td>{{ group.get('item')?.value }}</td>
+            <td>{{ group.get('unitType')?.value }}</td>
+            <td>
+              <input
+                pInputText
+                formControlName="pricePerUnit"
+                type="number"
+                class="w-full"
+              />
+            </td>
+            <td>
+              <button
+                pButton
+                icon="pi pi-trash"
+                class="p-button-danger"
+                type="button"
+                (click)="removeLine(i)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <div class="mt-4 font-bold">Total: {{ total | currency }}</div>
+    </form>
+  </p-card>
+</div>
