@@ -7,5 +7,8 @@ export enum QuoteItemTypes {
   HVACPlan = 'hvacPlan',
   CeilingAndLightingPlan = 'ceilingAndLightingPlan',
   KitchenCarpentry = 'kitchenCarpentry',
-  DressingRoomCarpentry = 'dressingRoomCarpentry'
+  DressingRoomCarpentry = 'dressingRoomCarpentry',
+  DecorativeWalls = "DecorativeWalls"
 }
+
+

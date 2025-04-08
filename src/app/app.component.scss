@@ -1,3 +1,23 @@
 .app-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    // fle and center chidren , 80% width, 80% height
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.app-header {
+    width: 60vw;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
 }

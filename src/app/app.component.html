@@ -1,8 +1,10 @@
 <div class="app-container">
-    <header class="app-header">
+    <div class="app-header">
         <h1>Quotify</h1>
         <p-menubar [model]="menuItems"></p-menubar>
-    </header>
+    </div>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
 
-    <router-outlet></router-outlet>
 </div>

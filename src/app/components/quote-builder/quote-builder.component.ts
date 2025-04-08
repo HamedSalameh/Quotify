@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
@@ -13,6 +14,9 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { QuoteItemTypes } from './QuoteItemTypes';
+import { QuoteItemFactory } from './QuoteItemFactory';
+import { QuoteItem } from './QuoteItem';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-quote-builder',
@@ -30,15 +34,16 @@ import { QuoteItemTypes } from './QuoteItemTypes';
     CheckboxModule,
   ],
 })
-export class QuoteBuilderComponent {
+export class QuoteBuilderComponent implements OnDestroy {
   form: FormGroup;
   QuoteItemFactory: QuoteItemFactory;
-  
+  unsubscribe$ = new Subject<void>();
+
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       lines: this.fb.array([]),
     });
-    this.QuoteItemFactory = new QuoteItemFactory(this.fb);
+    this.QuoteItemFactory = new QuoteItemFactory();
   }
 
   // Get the lines as a FormArray
@@ -65,19 +70,23 @@ export class QuoteBuilderComponent {
     const line = this.fb.group({
       item: [item],
       unitType: [unitType],
-      units: [units],
-      pricePerUnit: [pricePerUnit],
+      units: [units, [Validators.required, Validators.min(0)]],
+      pricePerUnit: [pricePerUnit, [Validators.required, Validators.min(0)]],
       totalPrice: [totalPrice],
       selected: [false],
     });
-  
-    // Subscribe to changes on units and pricePerUnit
-    line.get('units')?.valueChanges.subscribe(() => this.updateTotalPrice(line));
-    line.get('pricePerUnit')?.valueChanges.subscribe(() => this.updateTotalPrice(line));
-  
+
+    line.valueChanges
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(values => {
+        this.updateTotalPrice(line);
+      });
+
     return line;
   }
-  
+
   // Calculates the row-level total and updates the form control.
   private updateTotalPrice(line: FormGroup): void {
     const units = parseFloat(line.get('units')?.value) || 0;
@@ -87,10 +96,6 @@ export class QuoteBuilderComponent {
     if (newTotal !== (parseFloat(line.get('totalPrice')?.value) || 0)) {
       line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
     }
-  }
-  
-  addLine(item = '', unitType = 'number', units = 0, pricePerUnit = 0, price = 0): void {
-    this.lines.push(this.createLine(item, unitType, units, pricePerUnit, price));
   }
 
   removeLine(index: number): void {
@@ -105,124 +110,64 @@ export class QuoteBuilderComponent {
     }
   }
 
-  addKitchenBlueprint(): void {
-    this.addLine('Kitchen Blueprint', 'area', 0, 0);
-  }
-
-  addConstructionAndDemolition(): void {
-    this.addLine('Construction and Demolition', 'area', 0, 0);
-  }
-
-  createNewLineWithDefaults(itemName: string): void {
-    this.addLine(itemName, 'area', 0, 0);
+  addItem(itemType: QuoteItemTypes): void {
+    const item = this.QuoteItemFactory.createLine(itemType);
+    this.lines.push(this.createLine(item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
   }
 
   quoteItemOptions = [
     {
-      label: 'Add Kitchen Blueprint',
-      icon: 'pi pi-plus',
-      command: () => this.addKitchenBlueprint(),
+      label: 'Add Kitchen Carpentry',
+      icon: 'ph ph-ruler',
+      command: () => this.addItem(QuoteItemTypes.KitchenCarpentry),
     },
     {
       label: 'Add Construction and Demolition',
-      icon: 'pi pi-plus',
-      command: () => this.addConstructionAndDemolition(),
+      icon: 'ph ph-hammer',
+      command: () => this.addItem(QuoteItemTypes.ConstructionAndDemolition),
     },
     {
       label: 'Add Furniture Layout',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.FurnitureLayout)
-        ),
+      icon: 'ph ph-blueprint',
+      command: () => this.addItem(QuoteItemTypes.FurnitureLayout),
     },
     {
       label: 'Add Electrical Plan',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.ElectricalPlan)
-        ),
+      icon: 'ph ph-lightning',
+      command: () => this.addItem(QuoteItemTypes.ElectricalPlan),
     },
     {
       label: 'Add Plumbing Plan',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.PlumbingPlan)
-        ),
+      icon: 'ph ph-pipe',
+      command: () => this.addItem(QuoteItemTypes.PlumbingPlan),
     },
     {
       label: 'Add HVAC Plan',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.HVACPlan)
-        ),
+      icon: 'ph ph-wind',
+      command: () => this.addItem(QuoteItemTypes.HVACPlan),
     },
     {
       label: 'Add Ceiling and Lighting Plan',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(
-            QuoteItemTypes.CeilingAndLightingPlan
-          )
-        ),
-    },
-    {
-      label: 'Add Kitchen Carpentry',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.KitchenCarpentry)
-        ),
+      icon: 'ph ph-lightbulb',
+      command: () => this.addItem(QuoteItemTypes.CeilingAndLightingPlan),
     },
     {
       label: 'Add Dressing Room Carpentry',
-      icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(QuoteItemTypes.DressingRoomCarpentry)
-        ),
+      icon: 'ph ph-t-shirt',
+      command: () => this.addItem(QuoteItemTypes.DressingRoomCarpentry),
     },
-  ];
-}
-
-export class QuoteItemFactory {
-  constructor(private fb: FormBuilder) { }
-
-  public createLine(itemType: QuoteItemTypes): FormGroup {
-    switch (itemType) {
-      case QuoteItemTypes.ConstructionAndDemolition:
-        return this.createLineWithDefaults('Construction and Demolition');
-      case QuoteItemTypes.FurnitureLayout:
-        return this.createLineWithDefaults('Furniture Layout');
-      case QuoteItemTypes.ElectricalPlan:
-        return this.createLineWithDefaults('Electrical Plan');
-      case QuoteItemTypes.PlumbingPlan:
-        return this.createLineWithDefaults('Plumbing Plan');
-      case QuoteItemTypes.HVACPlan:
-        return this.createLineWithDefaults('HVAC Plan');
-      case QuoteItemTypes.CeilingAndLightingPlan:
-        return this.createLineWithDefaults('Ceiling and Lighting Plan');
-      case QuoteItemTypes.KitchenCarpentry:
-        return this.createLineWithDefaults('Kitchen Carpentry');
-      case QuoteItemTypes.DressingRoomCarpentry:
-        return this.createLineWithDefaults('Dressing Room Carpentry');
-      default:
-        throw new Error('Invalid item type');
+    {
+      label: 'Decorativd Walls',
+      icon: 'ph ph-wall',
+      command: () => this.addItem(QuoteItemTypes.DecorativeWalls),
     }
+  ];
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
-  private createLineWithDefaults(label: string): FormGroup {
-    return this.fb.group({
-      item: [label],
-      unitType: ['area'],
-      units: [0],
-      pricePerUnit: [0],
-      totalPrice: [0],
-      selected: [false],
-    });
-  }
 }
+
+
