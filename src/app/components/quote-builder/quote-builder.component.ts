@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
+import { QuoteItemTypes } from './QuoteItemTypes';
 
 @Component({
   selector: 'app-quote-builder',
@@ -32,7 +33,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 export class QuoteBuilderComponent {
   form: FormGroup;
   QuoteItemFactory: QuoteItemFactory;
-
+  
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       lines: this.fb.array([]),
@@ -40,34 +41,56 @@ export class QuoteBuilderComponent {
     this.QuoteItemFactory = new QuoteItemFactory(this.fb);
   }
 
+  // Get the lines as a FormArray
   get lines(): FormArray {
     return this.form.get('lines') as FormArray;
   }
 
+  // Sum the totalPrice field from each row
   get total(): number {
     return this.lines.controls.reduce((sum, line) => {
-      const price = parseFloat(line.get('pricePerUnit')?.value || 0);
-      return sum + price;
+      const rowTotal = parseFloat(line.get('totalPrice')?.value || '0');
+      return sum + rowTotal;
     }, 0);
   }
 
+  // Creates a new row (line)
   createLine(
     item: string = '',
     unitType: string = 'number',
     units: number = 0,
-    pricePerUnit: number = 0
+    pricePerUnit: number = 0,
+    totalPrice: number = 0
   ): FormGroup {
-    return this.fb.group({
+    const line = this.fb.group({
       item: [item],
       unitType: [unitType],
       units: [units],
       pricePerUnit: [pricePerUnit],
+      totalPrice: [totalPrice],
       selected: [false],
     });
+  
+    // Subscribe to changes on units and pricePerUnit
+    line.get('units')?.valueChanges.subscribe(() => this.updateTotalPrice(line));
+    line.get('pricePerUnit')?.valueChanges.subscribe(() => this.updateTotalPrice(line));
+  
+    return line;
   }
-
-  addLine(item = '', unitType = 'number', units = 0, pricePerUnit = 0): void {
-    this.lines.push(this.createLine(item, unitType, pricePerUnit));
+  
+  // Calculates the row-level total and updates the form control.
+  private updateTotalPrice(line: FormGroup): void {
+    const units = parseFloat(line.get('units')?.value) || 0;
+    const pricePerUnit = parseFloat(line.get('pricePerUnit')?.value) || 0;
+    const newTotal = units * pricePerUnit;
+    // Only update if the computed total is different.
+    if (newTotal !== (parseFloat(line.get('totalPrice')?.value) || 0)) {
+      line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
+    }
+  }
+  
+  addLine(item = '', unitType = 'number', units = 0, pricePerUnit = 0, price = 0): void {
+    this.lines.push(this.createLine(item, unitType, units, pricePerUnit, price));
   }
 
   removeLine(index: number): void {
@@ -86,6 +109,14 @@ export class QuoteBuilderComponent {
     this.addLine('Kitchen Blueprint', 'area', 0, 0);
   }
 
+  addConstructionAndDemolition(): void {
+    this.addLine('Construction and Demolition', 'area', 0, 0);
+  }
+
+  createNewLineWithDefaults(itemName: string): void {
+    this.addLine(itemName, 'area', 0, 0);
+  }
+
   quoteItemOptions = [
     {
       label: 'Add Kitchen Blueprint',
@@ -95,12 +126,7 @@ export class QuoteBuilderComponent {
     {
       label: 'Add Construction and Demolition',
       icon: 'pi pi-plus',
-      command: () =>
-        this.lines.push(
-          this.QuoteItemFactory.createLine(
-            QuoteItemTypes.ConstructionAndDemolition
-          )
-        ),
+      command: () => this.addConstructionAndDemolition(),
     },
     {
       label: 'Add Furniture Layout',
@@ -130,7 +156,9 @@ export class QuoteBuilderComponent {
       label: 'Add HVAC Plan',
       icon: 'pi pi-plus',
       command: () =>
-        this.lines.push(this.QuoteItemFactory.createLine(QuoteItemTypes.HVACPlan)),
+        this.lines.push(
+          this.QuoteItemFactory.createLine(QuoteItemTypes.HVACPlan)
+        ),
     },
     {
       label: 'Add Ceiling and Lighting Plan',
@@ -161,19 +189,8 @@ export class QuoteBuilderComponent {
   ];
 }
 
-export enum QuoteItemTypes {
-  ConstructionAndDemolition = 'constructionAndDemolition',
-  FurnitureLayout = 'furnitureLayout',
-  ElectricalPlan = 'electricalPlan',
-  PlumbingPlan = 'plumbingPlan',
-  HVACPlan = 'hvacPlan',
-  CeilingAndLightingPlan = 'ceilingAndLightingPlan',
-  KitchenCarpentry = 'kitchenCarpentry',
-  DressingRoomCarpentry = 'dressingRoomCarpentry',
-}
-
 export class QuoteItemFactory {
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   public createLine(itemType: QuoteItemTypes): FormGroup {
     switch (itemType) {
@@ -204,6 +221,7 @@ export class QuoteItemFactory {
       unitType: ['area'],
       units: [0],
       pricePerUnit: [0],
+      totalPrice: [0],
       selected: [false],
     });
   }

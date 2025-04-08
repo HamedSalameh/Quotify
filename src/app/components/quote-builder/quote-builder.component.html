@@ -1,19 +1,22 @@
 <div class="p-4">
   <p-card header="Quote Builder">
     <form [formGroup]="form">
-      <p-splitButton
-        label="Add Item"
-        icon="pi pi-plus"
-        [model]="quoteItemOptions"
-        class="mb-3"
-      ></p-splitButton>
+      <p-splitButton label="Add Item" icon="pi pi-plus" [model]="quoteItemOptions" class="mb-3">
+        <ng-template #content>
 
-      <p-table
-        [value]="lines.controls"
-        [paginator]="true"
-        [rows]="10"
-        [rowsPerPageOptions]="[5, 10, 20]"
-      >
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-plus-icon lucide-plus">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          <span>Add Item</span>
+
+        </ng-template>
+      </p-splitButton>
+
+      <p-table [value]="lines.controls" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+        [size]="'small'" [showGridlines]="true">
         <ng-template pTemplate="header">
           <tr>
             <th>Select</th>
@@ -21,6 +24,7 @@
             <th>Unit Type</th>
             <th>Units</th>
             <th>Price/Unit</th>
+            <th>Price</th>
             <th>Actions</th>
           </tr>
         </ng-template>
@@ -28,37 +32,29 @@
         <ng-template pTemplate="body" let-group let-i="rowIndex">
           <tr [formGroup]="group">
             <td>
-              <p-checkbox
-                formControlName="selected"
-                binary="true"
-              ></p-checkbox>
+              <p-checkbox formControlName="selected" binary="true"></p-checkbox>
             </td>
             <td>{{ group.get('item')?.value }}</td>
             <td>{{ group.get('unitType')?.value }}</td>
             <td>
-              <input
-                pInputText
-                formControlName="units"
-                type="number"
-                class="w-full"
-              />
+              <input pInputText formControlName="units" type="number" class="w-full" />
             </td>
             <td>
-              <input
-                pInputText
-                formControlName="pricePerUnit"
-                type="number"
-                class="w-full"
-              />
+              <input pInputText formControlName="pricePerUnit" type="number" class="w-full" />
             </td>
+            <td>{{ group.get('totalPrice')?.value | currency }}</td>
             <td>
-              <button
-                pButton
-                icon="pi pi-trash"
-                class="p-button-danger"
-                type="button"
-                (click)="removeLine(i)"
-              ></button>
+              <button pButton class="p-button-danger" type="button" (click)="removeLine(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-trash2-icon lucide-trash-2">
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  <line x1="10" x2="10" y1="11" y2="17" />
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
+              </button>
             </td>
           </tr>
         </ng-template>
