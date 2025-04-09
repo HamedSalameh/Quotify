@@ -12,9 +12,15 @@ import { MenubarModule } from 'primeng/menubar';
 })
 export class AppComponent {
   title = 'Quotify';
+  // localized strings
+  menuLabel = $localize`:@@app.menuLabel: Menu`;
+  settingsLabel = $localize`:@@app.settingsLabel: Settings`;
+  quoteBuilderLabel = $localize`:@@app.quoteBuilderLabel: Quote Builder`;
+  aboutLabel = $localize`:@@app.aboutLabel: About`;
+
   menuItems = [
-    { label: 'Quote Builder', icon: 'pi pi-fw pi-file', routerLink: '/quote-builder' },
-    { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: '/settings' },
+    { label: this.quoteBuilderLabel, icon: 'pi pi-fw pi-file', routerLink: '/quote-builder' },
+    { label: this.settingsLabel, icon: 'pi pi-fw pi-cog', routerLink: '/settings' },
   ];
   selectedMenuItem: any = null;
 

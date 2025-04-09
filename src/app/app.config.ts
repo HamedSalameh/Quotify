@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura  from '@primeng/themes/aura';
+import Lara from '@primeng/themes/lara'; // Change to your desired theme
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
@@ -14,6 +15,8 @@ import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    // provide global hebrew locale
+    { provide: 'LOCALE_ID', useValue: 'he' },
     // Firebase
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
@@ -22,7 +25,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-          preset: Aura
+          preset: Lara,
+          options: {
+            darkModeSelector: false || 'none'
+          }
       }
   })]
 };

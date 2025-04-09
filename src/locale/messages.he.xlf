@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="2078241808113697591" datatype="html">
+        <source>active</source>
+        <target>פעילה</target>
+      </trans-unit>
+      <trans-unit id="8075168556531069883" datatype="html">
+        <source>Item</source>
+        <target>פריט</target>
+      </trans-unit>
+      <trans-unit id="3323880774610969171" datatype="html">
+        <source>Unit Type</source>
+        <target>סוג יחידה</target>
+      </trans-unit>
+      <trans-unit id="9074327260054432941" datatype="html">
+        <source>Units</source>
+        <target>יחידות</target>
+      </trans-unit>
+      <trans-unit id="3835798234743489596" datatype="html">
+        <source>Price/Unit</source>
+        <target>מחיר/יחידה</target>
+      </trans-unit>
+      <trans-unit id="8894377483833272091" datatype="html">
+        <source>Price</source>
+        <target>מחיר</target>
+      </trans-unit>
+      <trans-unit id="3193976279273491157" datatype="html">
+        <source>Actions</source>
+        <target>פעולות</target>
+      </trans-unit>
+      <trans-unit id="quoteBuilder.addButtonLabel" datatype="html">
+        <source> Add Item</source>
+        <target> הוסף פריט</target>
+      </trans-unit>
+      <trans-unit id="settings.saveButtonLabel" datatype="html">
+        <source> Save Configuration</source>
+        <target> שמור תצורה</target>
+      </trans-unit>
+      <trans-unit id="settings.resetButtonLabel" datatype="html">
+        <source> Reset Configuration</source>
+        <target> אפס תצורה</target>
+      </trans-unit>
+      <trans-unit id="app.menuLabel" datatype="html">
+        <source> Menu</source>
+        <target state="new">תפריט</target>
+      </trans-unit>
+      <trans-unit id="app.settingsLabel" datatype="html">
+        <source> Settings</source>
+        <target state="new"> הגדרות</target>
+      </trans-unit>
+      <trans-unit id="app.quoteBuilderLabel" datatype="html">
+        <source> Quote Builder</source>
+        <target state="new">מחשבון עלויות</target>
+      </trans-unit>
+      <trans-unit id="app.aboutLabel" datatype="html">
+        <source> About</source>
+        <target>אודות</target>
+      </trans-unit>
+      <trans-unit id="3489593325740504759" datatype="html">
+        <source>Total: <x id="INTERPOLATION" equiv-text="{{ total | currency:&apos;ILS&apos; }}"/></source>
+        <target state="new">סך הכל: <x id="INTERPOLATION" equiv-text="{{ total | currency }}"/></target>
+      </trans-unit>
+      <trans-unit id="8650499415827640724" datatype="html">
+        <source>Type</source>
+        <target state="new">סוג</target>
+      </trans-unit>
+      <trans-unit id="6555318547274416232" datatype="html">
+        <source>Value</source>
+        <target state="new">ערך</target>
+      </trans-unit>
+      <trans-unit id="9169068971181264741" datatype="html">
+        <source>Base Price</source>
+        <target>מחיר התחלתי ליחידה</target>
+      </trans-unit>
+      <trans-unit id="quoteBuilder.resetQuoteLabel" datatype="html">
+        <source> Reset Quote</source>
+        <target>איפוס טבלה</target>
+      </trans-unit>
+      <trans-unit id="settings.successMessage" datatype="html">
+        <source> Configuration saved successfully!</source>
+        <target>השינויים נשמרו בהצלחה</target>
+      </trans-unit>
+      <trans-unit id="settings.errorMessage" datatype="html">
+        <source> Error saving configuration!</source>
+        <target>תקלה בשמירת השינויים</target>
+      </trans-unit>
+      <trans-unit id="settings.resetMessage" datatype="html">
+        <source> Configuration reset to default!</source>
+        <target>ההגדרות אופסו</target>
+      </trans-unit>
+      <trans-unit id="settings.invalidFormMessageTitle" datatype="html">
+        <source> Invalid Form</source>
+        <target>טופס לא תקין</target>
+      </trans-unit>
+      <trans-unit id="settings.invalidFormMessage" datatype="html">
+        <source> Please correct the errors in the form.</source>
+        <target>אנא תקן את השגיאות בטופס</target>
+      </trans-unit>
+      <trans-unit id="settings.yesButtonLabel" datatype="html">
+        <source> Yes</source>
+        <target state="new"> כן</target>
+      </trans-unit>
+      <trans-unit id="settings.noButtonLabel" datatype="html">
+        <source> No</source>
+        <target>לא</target>
+      </trans-unit>
+      <trans-unit id="settings.confirmResetMessage" datatype="html">
+        <source> Are you sure you want to reset the configuration?</source>
+        <target>האם אתה בטוח שברצונך לאפס את ההגדרות?</target>
+      </trans-unit>
+      <trans-unit id="settings.resetConfirmationHeader" datatype="html">
+        <source> Confirmation</source>
+        <target>אישור</target>
+      </trans-unit>
+      <trans-unit id="settings.resetCancelled" datatype="html">
+        <source> Reset Cancelled</source>
+        <target>איפוס בוטל</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

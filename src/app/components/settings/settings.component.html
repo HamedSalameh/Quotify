@@ -1,10 +1,11 @@
 <div class="container">
     <p-toast />
+    <p-confirmdialog />
     <div class="menu">
-        <p-button icon="ph ph-upload" label="Save Configuration" severity="success"
+        <p-button icon="ph ph-upload" [label]="this.saveButtonLabel" size="small" severity="success"
             (onClick)="saveConfiguration()"></p-button>
-        <p-button icon="ph ph-arrow-counter-clockwise" label="Reset Settings" severity="danger"
-            (onClick)="ResetConfiguration()"></p-button>
+        <p-button icon="ph ph-arrow-counter-clockwise" [label]="this.resetButtonLabel" size="small" severity="danger"
+            (onClick)="confirmReset()"></p-button>
     </div>
 
     <div class="content" [formGroup]="form">
@@ -12,18 +13,18 @@
             <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i" class="p-mb-3">
                 <div class="configuration-item">
                     <div class="ci-key">
-                        <label>Type</label>
+                        <label i18n>Type</label>
                         <input type="text" pInputText formControlName="key" />
                     </div>
 
                     <div class="ci-label">
-                        <label>Value</label>
+                        <label i18n>Value</label>
                         <input type="text" pInputText formControlName="label" />
 
                     <div class="ci-value">
-                        <label>Base Price</label>
-                        <p-inputNumber formControlName="base_price" mode="currency" currency="USD"
-                            locale="en-US"></p-inputNumber>
+                        <label i18n>Base Price</label>
+                        <p-inputNumber formControlName="base_price" mode="currency" currency="ILS"
+                            locale="he"></p-inputNumber>
                     </div>
                 </div>
             </div>
