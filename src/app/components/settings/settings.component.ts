@@ -11,10 +11,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, CardModule, ButtonModule, InputNumberModule, ToastModule, ConfirmDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, CardModule, ButtonModule, InputNumberModule, ToastModule, ConfirmDialogModule, ButtonGroupModule],
   standalone: true,
   providers: [MessageService, ConfirmationService],
   templateUrl: './settings.component.html',
@@ -28,6 +29,9 @@ export class SettingsComponent {
 
   saveButtonLabel = $localize`:@@settings.saveButtonLabel: Save Configuration`;
   resetButtonLabel = $localize`:@@settings.resetButtonLabel: Reset Configuration`;
+  newItemButtonLabel = $localize`:@@settings.newItemLabel: New Item`;
+  deleteButtonLabel = $localize`:@@settings.deleteButtonLabel: Delete`;
+
   successMessage = $localize`:@@settings.successMessage: Configuration saved successfully!`;
   errorMessage = $localize`:@@settings.errorMessage: Error saving configuration!`;
   resetMessage = $localize`:@@settings.resetMessage: Configuration reset to default!`;
@@ -57,6 +61,21 @@ export class SettingsComponent {
 
   get items(): FormArray {
     return this.form.get('items') as FormArray;
+  }
+
+  addNewItem(): void {
+    const newItem: QuoteItemOptionConfig = {
+      key: '',
+      label: '',
+      icon: '',
+      base_price: 0
+    };
+  
+    this.items.push(this.createItemGroup(newItem));
+  } 
+
+  deleteItem(index: number): void {
+    this.items.removeAt(index);
   }
 
   loadConfiguration() {
@@ -100,20 +119,21 @@ export class SettingsComponent {
 
   resetConfiguration() {
     this.quoteItems = [
-      { key: QuoteItemTypes.ConstructionAndDemolition, label: "Construction and Demolition", icon: "ph ph-hammer", base_price: 20 },
-      { key: QuoteItemTypes.KitchenCarpentry, label: "Kitchen Carpentry", icon: "ph ph-ruler", base_price: 150 },
-      { key: QuoteItemTypes.CeilingAndLightingPlan, label: "Ceiling and Lighting Plan", icon: "ph ph-lightbulb", base_price: 25 },
-      { key: QuoteItemTypes.HVACPlan, label: "HVAC Plan", icon: "ph ph-thermometer", base_price: 200 },
-      { key: QuoteItemTypes.PlumbingPlan, label: "Plumbing Plan", icon: "ph ph-water", base_price: 400 },
-      { key: QuoteItemTypes.DressingRoomCarpentry, label: "Dressing Room Carpentry", icon: "ph ph-ruler", base_price: 50 },
-      { key: QuoteItemTypes.ElectricalPlan, label: "Electrical Plan", icon: "ph ph-plug", base_price: 25 },
-      { key: QuoteItemTypes.FurnitureLayout, label: "Furniture Layout", icon: "ph ph-layout", base_price: 10 },
-      { key: QuoteItemTypes.DecorativeWalls, label: "Decorative Walls", icon: "ph ph-wall", base_price: 50 },
+      { key: 'constructionAndDemolition', label: "Construction and Demolition", icon: "ph ph-hammer", base_price: 20 },
+      { key: 'kitchenCarpentry', label: "Kitchen Carpentry", icon: "ph ph-ruler", base_price: 150 },
+      { key: 'ceilingAndLightingPlan', label: "Ceiling and Lighting Plan", icon: "ph ph-lightbulb", base_price: 25 },
+      { key: 'hvacPlan', label: "HVAC Plan", icon: "ph ph-thermometer", base_price: 200 },
+      { key: 'plumbingPlan', label: "Plumbing Plan", icon: "ph ph-water", base_price: 400 },
+      { key: 'dressingRoomCarpentry', label: "Dressing Room Carpentry", icon: "ph ph-ruler", base_price: 50 },
+      { key: 'electricalPlan', label: "Electrical Plan", icon: "ph ph-plug", base_price: 25 },
+      { key: 'furnitureLayout', label: "Furniture Layout", icon: "ph ph-layout", base_price: 10 },
+      { key: 'decorativeWalls', label: "Decorative Walls", icon: "ph ph-wall", base_price: 50 },
     ];
-
+  
     this.settingsService.saveConfiguration(this.quoteItems)
       .then(() => console.log('Configuration saved successfully!'))
       .catch(error => console.error('Error saving configuration: ', error));
+  
     this.messageService.add({ severity: 'success', summary: this.resetMessage });
   }
 

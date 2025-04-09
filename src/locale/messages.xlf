@@ -89,6 +89,15 @@
       <trans-unit id="settings.yesButtonLabel" datatype="html">
         <source> Yes</source>
       </trans-unit>
+      <trans-unit id="3074987902485823708" datatype="html">
+        <source>Icon</source>
+      </trans-unit>
+      <trans-unit id="settings.deleteButtonLabel" datatype="html">
+        <source> Delete</source>
+      </trans-unit>
+      <trans-unit id="settings.newItemLabel" datatype="html">
+        <source> New Item</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -151,7 +151,7 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
             key: config.key,
             label: `${config.label}`,
             icon: config.icon,
-            command: () => this.addItem(config.key as QuoteItemTypes),
+            command: () => this.addItem(config.key),
           }));
         },
         error: (err) => {

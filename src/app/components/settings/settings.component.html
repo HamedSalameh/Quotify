@@ -2,8 +2,13 @@
     <p-toast />
     <p-confirmdialog />
     <div class="menu">
-        <p-button icon="ph ph-upload" [label]="this.saveButtonLabel" size="small" severity="success"
-            (onClick)="saveConfiguration()"></p-button>
+        <p-buttongroup>
+            <p-button icon="ph ph-upload" [label]="this.saveButtonLabel" size="small" severity="success"
+                (onClick)="saveConfiguration()"></p-button>
+            <p-button icon="ph ph-plus" [label]="this.newItemButtonLabel" size="small" severity="info"
+                (onClick)="addNewItem()"></p-button>
+        </p-buttongroup>
+
         <p-button icon="ph ph-arrow-counter-clockwise" [label]="this.resetButtonLabel" size="small" severity="danger"
             (onClick)="confirmReset()"></p-button>
     </div>
@@ -20,15 +25,24 @@
                     <div class="ci-label">
                         <label i18n>Value</label>
                         <input type="text" pInputText formControlName="label" />
+                    </div>
+
+                    <div class="ci-icon">
+                        <label i18n>Icon</label>
+                        <input type="text" pInputText formControlName="icon" />
+                    </div>
 
                     <div class="ci-value">
                         <label i18n>Base Price</label>
                         <p-inputNumber formControlName="base_price" mode="currency" currency="ILS"
                             locale="he"></p-inputNumber>
                     </div>
+
+                    <!-- delete button -->
+                    <p-button icon="ph ph-trash" class="delete-button" size="small" severity="danger"
+                        (onClick)="deleteItem(i)" [label]="this.deleteButtonLabel"></p-button>
                 </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>

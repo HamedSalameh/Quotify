@@ -1,0 +1,35 @@
+{
+  "hosting": {
+    "public": "dist/quotify/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/he/**",
+        "destination": "/he/index.html"
+      },
+      {
+        "source": "/en/**",
+        "destination": "/en/index.html"
+      },
+      {
+        "source": "/",
+        "destination": "/he/index.html"
+      }
+    ]
+  }
+}
