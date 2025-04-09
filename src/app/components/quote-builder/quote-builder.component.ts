@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -12,11 +12,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TableModule } from 'primeng/table';
-import { CheckboxModule } from 'primeng/checkbox';
-import { QuoteItemTypes } from './QuoteItemTypes';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { QuoteItemTypes } from '../../models/QuoteItemTypes';
+import { catchError, last, of, Subject, takeUntil } from 'rxjs';
+import { SettingsService } from '../../services/settings.service';
+import { QuoteItemOptionConfig } from '../../models/QuoteItemOptionConfig';
+import { QuoteItemMenuOption } from '../../models/QuoteItemMenuOption';
 import { QuoteItemFactory } from './QuoteItemFactory';
-import { QuoteItem } from './QuoteItem';
-import { Subject, takeUntil } from 'rxjs';
+import { UnitTypes } from '../../models/UnitTypes';
 
 @Component({
   selector: 'app-quote-builder',
@@ -31,19 +34,83 @@ import { Subject, takeUntil } from 'rxjs';
     ButtonModule,
     SplitButtonModule,
     TableModule,
-    CheckboxModule,
+    ToggleSwitchModule
   ],
 })
-export class QuoteBuilderComponent implements OnDestroy {
+export class QuoteBuilderComponent implements OnDestroy, OnInit {
   form: FormGroup;
-  QuoteItemFactory: QuoteItemFactory;
+  quoteItemOptions: QuoteItemMenuOption[] = [];
+  quoteItemOptionsConfig: QuoteItemOptionConfig[] = [];
   unsubscribe$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private settingsService: SettingsService) {
     this.form = this.fb.group({
       lines: this.fb.array([]),
     });
-    this.QuoteItemFactory = new QuoteItemFactory();
+  }
+
+  ngOnInit() {
+    this.initializeQuoteItems();
+    this.loadConfiguration();
+  }
+
+  initializeQuoteItems(): void {
+    this.quoteItemOptions = [
+      {
+        key: QuoteItemTypes.KitchenCarpentry,
+        label: 'Add Kitchen Carpentry',
+        icon: 'ph ph-ruler',
+        command: () => this.addItem(QuoteItemTypes.KitchenCarpentry),
+      },
+      {
+        key: QuoteItemTypes.ConstructionAndDemolition,
+        label: 'Add Construction and Demolition',
+        icon: 'ph ph-hammer',
+        command: () => this.addItem(QuoteItemTypes.ConstructionAndDemolition),
+      },
+      {
+        key: QuoteItemTypes.FurnitureLayout,
+        label: 'Add Furniture Layout',
+        icon: 'ph ph-blueprint',
+        command: () => this.addItem(QuoteItemTypes.FurnitureLayout),
+      },
+      {
+        key: QuoteItemTypes.ElectricalPlan,
+        label: 'Add Electrical Plan',
+        icon: 'ph ph-lightning',
+        command: () => this.addItem(QuoteItemTypes.ElectricalPlan),
+      },
+      {
+        key: QuoteItemTypes.PlumbingPlan,
+        label: 'Add Plumbing Plan',
+        icon: 'ph ph-pipe',
+        command: () => this.addItem(QuoteItemTypes.PlumbingPlan),
+      },
+      {
+        key: QuoteItemTypes.HVACPlan,
+        label: 'Add HVAC Plan',
+        icon: 'ph ph-wind',
+        command: () => this.addItem(QuoteItemTypes.HVACPlan),
+      },
+      {
+        key: QuoteItemTypes.CeilingAndLightingPlan,
+        label: 'Add Ceiling and Lighting Plan',
+        icon: 'ph ph-lightbulb',
+        command: () => this.addItem(QuoteItemTypes.CeilingAndLightingPlan),
+      },
+      {
+        key: QuoteItemTypes.DressingRoomCarpentry,
+        label: 'Add Dressing Room Carpentry',
+        icon: 'ph ph-t-shirt',
+        command: () => this.addItem(QuoteItemTypes.DressingRoomCarpentry),
+      },
+      {
+        key: QuoteItemTypes.DecorativeWalls,
+        label: 'Decorative Walls',
+        icon: 'ph ph-wall',
+        command: () => this.addItem(QuoteItemTypes.DecorativeWalls),
+      }
+    ]
   }
 
   // Get the lines as a FormArray
@@ -61,13 +128,15 @@ export class QuoteBuilderComponent implements OnDestroy {
 
   // Creates a new row (line)
   createLine(
+    active: boolean = false,
     item: string = '',
-    unitType: string = 'number',
+    unitType: string = UnitTypes.Number,
     units: number = 0,
     pricePerUnit: number = 0,
     totalPrice: number = 0
   ): FormGroup {
     const line = this.fb.group({
+      active: [active],
       item: [item],
       unitType: [unitType],
       units: [units, [Validators.required, Validators.min(0)]],
@@ -102,72 +171,41 @@ export class QuoteBuilderComponent implements OnDestroy {
     this.lines.removeAt(index);
   }
 
-  removeSelectedLines(): void {
-    for (let i = this.lines.length - 1; i >= 0; i--) {
-      if (this.lines.at(i).get('selected')?.value) {
-        this.lines.removeAt(i);
-      }
-    }
-  }
-
   addItem(itemType: QuoteItemTypes): void {
-    const item = this.QuoteItemFactory.createLine(itemType);
-    this.lines.push(this.createLine(item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
+    const item = QuoteItemFactory.createLine(itemType);
+    const pricePerUnit = this.quoteItemOptionsConfig.find(option => option.key === itemType)?.base_price || 0;
+    item.pricePerUnit = pricePerUnit;
+    this.lines.push(this.createLine(true, item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
   }
 
-  quoteItemOptions = [
-    {
-      label: 'Add Kitchen Carpentry',
-      icon: 'ph ph-ruler',
-      command: () => this.addItem(QuoteItemTypes.KitchenCarpentry),
-    },
-    {
-      label: 'Add Construction and Demolition',
-      icon: 'ph ph-hammer',
-      command: () => this.addItem(QuoteItemTypes.ConstructionAndDemolition),
-    },
-    {
-      label: 'Add Furniture Layout',
-      icon: 'ph ph-blueprint',
-      command: () => this.addItem(QuoteItemTypes.FurnitureLayout),
-    },
-    {
-      label: 'Add Electrical Plan',
-      icon: 'ph ph-lightning',
-      command: () => this.addItem(QuoteItemTypes.ElectricalPlan),
-    },
-    {
-      label: 'Add Plumbing Plan',
-      icon: 'ph ph-pipe',
-      command: () => this.addItem(QuoteItemTypes.PlumbingPlan),
-    },
-    {
-      label: 'Add HVAC Plan',
-      icon: 'ph ph-wind',
-      command: () => this.addItem(QuoteItemTypes.HVACPlan),
-    },
-    {
-      label: 'Add Ceiling and Lighting Plan',
-      icon: 'ph ph-lightbulb',
-      command: () => this.addItem(QuoteItemTypes.CeilingAndLightingPlan),
-    },
-    {
-      label: 'Add Dressing Room Carpentry',
-      icon: 'ph ph-t-shirt',
-      command: () => this.addItem(QuoteItemTypes.DressingRoomCarpentry),
-    },
-    {
-      label: 'Decorativd Walls',
-      icon: 'ph ph-wall',
-      command: () => this.addItem(QuoteItemTypes.DecorativeWalls),
-    }
-  ];
+  // Load the configuration from Firestore and wire up command callbacks.
+  loadConfiguration(): void {
+    this.settingsService.getConfiguration()
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        // Optionally, catch and log errors and provide fallback empty array.
+        catchError(error => {
+          console.error("Error loading configuration", error);
+          // Return an empty array as a fallback.
+          return of([] as QuoteItemOptionConfig[]);
+        })
+      )
+      .subscribe({
+        next: (options: QuoteItemOptionConfig[]) => {
+          // Directly assign the configuration array instead of pushing to it.
+          this.quoteItemOptionsConfig = options;
+        },
+        error: (err) => {
+          // This error callback is optional since we handled errors in catchError.
+          console.error("Error in loadConfiguration subscription", err);
+        }
+      });
+  }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
 }
 
 

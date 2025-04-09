@@ -11,7 +11,7 @@
         [size]="'small'" [showGridlines]="true">
         <ng-template pTemplate="header">
           <tr>
-            <th>Select</th>
+            <th>active</th>
             <th>Item</th>
             <th>Unit Type</th>
             <th>Units</th>
@@ -24,7 +24,7 @@
         <ng-template pTemplate="body" let-group let-i="rowIndex">
           <tr [formGroup]="group">
             <td>
-              <p-checkbox formControlName="selected" binary="true"></p-checkbox>
+              <p-toggle-switch formControlName="active"></p-toggle-switch>
             </td>
             <td>{{ group.get('item')?.value }}</td>
             <td>{{ group.get('unitType')?.value }}</td>

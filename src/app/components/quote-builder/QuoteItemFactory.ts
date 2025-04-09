@@ -1,12 +1,12 @@
-import { QuoteItem } from './QuoteItem';
-import { QuoteItemTypes } from './QuoteItemTypes';
-import { UnitTypes } from './UnitTypes';
+import { QuoteItem } from '../../models/QuoteItem';
+import { QuoteItemTypes } from '../../models/QuoteItemTypes';
+import { UnitTypes } from '../../models/UnitTypes';
 
 
 export class QuoteItemFactory {
   constructor() { }
 
-  public createLine(itemType: QuoteItemTypes): QuoteItem {
+  public static createLine(itemType: QuoteItemTypes): QuoteItem {
     switch (itemType) {
       case QuoteItemTypes.ConstructionAndDemolition:
         return this.createLineWithDefaults('Construction and Demolition', UnitTypes.SquareMeter);
@@ -29,14 +29,14 @@ export class QuoteItemFactory {
     }
   }
 
-  private createLineWithDefaults(label: string, UnitType: UnitTypes): QuoteItem {
+  private static createLineWithDefaults(label: string, unitType: UnitTypes): QuoteItem {
     const quoteItem: QuoteItem = {
       item: label,
-      unitType: UnitType,
+      unitType: unitType,
       units: 0,
       pricePerUnit: 0,
       totalPrice: 0,
-      selected: false,
+      active: false,
     };
 
     return quoteItem;

@@ -5,5 +5,7 @@ export interface QuoteItem {
   units: number;
   pricePerUnit: number;
   totalPrice: number;
-  selected: boolean;
+  active: boolean;
 }
+
+
