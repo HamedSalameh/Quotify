@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; // full-width layout is usually better for forms
+    gap: 1.5rem;
+    margin: 0 auto;
+  }
+  
+  .configuration-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .ci-key,
+  .ci-value,
+  .ci-label {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }

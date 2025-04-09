@@ -2,9 +2,6 @@
   <p-card header="Quote Builder">
     <form [formGroup]="form">
       <p-splitButton label="Add Item" icon="pi pi-plus" [model]="quoteItemOptions" class="mb-3">
-        <ng-template #content>
-          <span>Add Item</span>
-        </ng-template>
       </p-splitButton>
 
       <p-table [value]="lines.controls" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"

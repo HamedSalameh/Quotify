@@ -24,6 +24,8 @@ export class QuoteItemFactory {
         return this.createLineWithDefaults('Kitchen Carpentry', UnitTypes.SquareMeter);
       case QuoteItemTypes.DressingRoomCarpentry:
         return this.createLineWithDefaults('Dressing Room Carpentry', UnitTypes.SquareMeter);
+      case QuoteItemTypes.DecorativeWalls:
+        return this.createLineWithDefaults('Decorative Walls', UnitTypes.SquareMeter);
       default:
         throw new Error('Invalid item type');
     }

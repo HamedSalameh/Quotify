@@ -50,67 +50,8 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.initializeQuoteItems();
+    this.quoteItemOptions = [];
     this.loadConfiguration();
-  }
-
-  initializeQuoteItems(): void {
-    this.quoteItemOptions = [
-      {
-        key: QuoteItemTypes.KitchenCarpentry,
-        label: 'Add Kitchen Carpentry',
-        icon: 'ph ph-ruler',
-        command: () => this.addItem(QuoteItemTypes.KitchenCarpentry),
-      },
-      {
-        key: QuoteItemTypes.ConstructionAndDemolition,
-        label: 'Add Construction and Demolition',
-        icon: 'ph ph-hammer',
-        command: () => this.addItem(QuoteItemTypes.ConstructionAndDemolition),
-      },
-      {
-        key: QuoteItemTypes.FurnitureLayout,
-        label: 'Add Furniture Layout',
-        icon: 'ph ph-blueprint',
-        command: () => this.addItem(QuoteItemTypes.FurnitureLayout),
-      },
-      {
-        key: QuoteItemTypes.ElectricalPlan,
-        label: 'Add Electrical Plan',
-        icon: 'ph ph-lightning',
-        command: () => this.addItem(QuoteItemTypes.ElectricalPlan),
-      },
-      {
-        key: QuoteItemTypes.PlumbingPlan,
-        label: 'Add Plumbing Plan',
-        icon: 'ph ph-pipe',
-        command: () => this.addItem(QuoteItemTypes.PlumbingPlan),
-      },
-      {
-        key: QuoteItemTypes.HVACPlan,
-        label: 'Add HVAC Plan',
-        icon: 'ph ph-wind',
-        command: () => this.addItem(QuoteItemTypes.HVACPlan),
-      },
-      {
-        key: QuoteItemTypes.CeilingAndLightingPlan,
-        label: 'Add Ceiling and Lighting Plan',
-        icon: 'ph ph-lightbulb',
-        command: () => this.addItem(QuoteItemTypes.CeilingAndLightingPlan),
-      },
-      {
-        key: QuoteItemTypes.DressingRoomCarpentry,
-        label: 'Add Dressing Room Carpentry',
-        icon: 'ph ph-t-shirt',
-        command: () => this.addItem(QuoteItemTypes.DressingRoomCarpentry),
-      },
-      {
-        key: QuoteItemTypes.DecorativeWalls,
-        label: 'Decorative Walls',
-        icon: 'ph ph-wall',
-        command: () => this.addItem(QuoteItemTypes.DecorativeWalls),
-      }
-    ]
   }
 
   // Get the lines as a FormArray
@@ -173,8 +114,9 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
 
   addItem(itemType: QuoteItemTypes): void {
     const item = QuoteItemFactory.createLine(itemType);
-    const pricePerUnit = this.quoteItemOptionsConfig.find(option => option.key === itemType)?.base_price || 0;
-    item.pricePerUnit = pricePerUnit;
+    const itemFromConfig = this.quoteItemOptionsConfig.find(option => option.key === itemType);
+    item.pricePerUnit = itemFromConfig?.base_price || 0;
+    item.item = itemFromConfig?.label || item.item;
     this.lines.push(this.createLine(true, item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
   }
 
@@ -194,6 +136,14 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
         next: (options: QuoteItemOptionConfig[]) => {
           // Directly assign the configuration array instead of pushing to it.
           this.quoteItemOptionsConfig = options;
+
+          // Dynamically generate quoteItemOptions from config
+          this.quoteItemOptions = this.quoteItemOptionsConfig.map(config => ({
+            key: config.key,
+            label: `${config.label}`,
+            icon: config.icon,
+            command: () => this.addItem(config.key as QuoteItemTypes),
+          }));
         },
         error: (err) => {
           // This error callback is optional since we handled errors in catchError.
