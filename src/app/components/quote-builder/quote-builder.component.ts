@@ -43,6 +43,10 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
   quoteItemOptionsConfig: QuoteItemOptionConfig[] = [];
   unsubscribe$ = new Subject<void>();
 
+  // Localized strings
+  addButtonLabel = $localize`:@@quoteBuilder.addButtonLabel: Add Item`;
+  resetQuoteLabel = $localize`:@@quoteBuilder.resetQuoteLabel: Reset Quote`;
+
   constructor(private fb: FormBuilder, private settingsService: SettingsService) {
     this.form = this.fb.group({
       lines: this.fb.array([]),
@@ -118,6 +122,11 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
     item.pricePerUnit = itemFromConfig?.base_price || 0;
     item.item = itemFromConfig?.label || item.item;
     this.lines.push(this.createLine(true, item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
+  }
+
+  // Resets the form and clears all lines.
+  resetQuote(): void {
+    this.lines.clear();
   }
 
   // Load the configuration from Firestore and wire up command callbacks.

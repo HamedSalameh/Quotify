@@ -4,3 +4,16 @@
     flex: 1;
     width: 60vw;
 }
+
+.sub-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
