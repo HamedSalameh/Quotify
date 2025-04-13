@@ -98,6 +98,27 @@
       <trans-unit id="settings.newItemLabel" datatype="html">
         <source> New Item</source>
       </trans-unit>
+      <trans-unit id="quoteBuilder.customItemLabel" datatype="html">
+        <source> Add Additional Item</source>
+      </trans-unit>
+      <trans-unit id="quoteBuilder.additionalItemsLabel" datatype="html">
+        <source> Additional Item</source>
+      </trans-unit>
+      <trans-unit id="unitTypes.electricalEndpoints" datatype="html">
+        <source>Electrical Endpoints</source>
+      </trans-unit>
+      <trans-unit id="unitTypes.linearMeter" datatype="html">
+        <source>Linear Meter</source>
+      </trans-unit>
+      <trans-unit id="unitTypes.number" datatype="html">
+        <source>Number</source>
+      </trans-unit>
+      <trans-unit id="unitTypes.squareMeter" datatype="html">
+        <source>Square Meter</source>
+      </trans-unit>
+      <trans-unit id="unitTypes.waterEndpoints" datatype="html">
+        <source>Water Endpoints</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,12 +1,10 @@
 import { QuoteItem } from '../../models/QuoteItem';
-import { QuoteItemTypes } from '../../models/QuoteItemTypes';
 import { UnitTypes } from '../../models/UnitTypes';
-
 
 export class QuoteItemFactory {
   constructor() { }
 
-  private static readonly DEFAULTS: Record<string, { label: string; unitType: UnitTypes }> = {
+  private static readonly DEFAULTS: Record<string, { label: string; unitType: string }> = {
     constructionAndDemolition: { label: 'Construction and Demolition', unitType: UnitTypes.SquareMeter },
     furnitureLayout: { label: 'Furniture Layout', unitType: UnitTypes.SquareMeter },
     electricalPlan: { label: 'Electrical Plan', unitType: UnitTypes.SquareMeter },
@@ -27,7 +25,7 @@ export class QuoteItemFactory {
     return this.createLineWithDefaults(label, unitType);
   }
 
-  private static createLineWithDefaults(label: string, unitType: UnitTypes): QuoteItem {
+  private static createLineWithDefaults(label: string, unitType: string): QuoteItem {
     return {
       item: label,
       unitType,

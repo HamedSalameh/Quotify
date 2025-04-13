@@ -19,7 +19,7 @@ import { SettingsService } from '../../services/settings.service';
 import { QuoteItemOptionConfig } from '../../models/QuoteItemOptionConfig';
 import { QuoteItemMenuOption } from '../../models/QuoteItemMenuOption';
 import { QuoteItemFactory } from './QuoteItemFactory';
-import { UnitTypes } from '../../models/UnitTypes';
+import { UnitType, UnitTypeLabels, UnitTypes } from '../../models/UnitTypes';
 
 @Component({
   selector: 'app-quote-builder',
@@ -46,6 +46,7 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
   // Localized strings
   addButtonLabel = $localize`:@@quoteBuilder.addButtonLabel: Add Item`;
   resetQuoteLabel = $localize`:@@quoteBuilder.resetQuoteLabel: Reset Quote`;
+  additionalItemLabel = $localize`:@@quoteBuilder.additionalItemsLabel: Additional Item`;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService) {
     this.form = this.fb.group({
@@ -103,13 +104,19 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
 
   // Calculates the row-level total and updates the form control.
   private updateTotalPrice(line: FormGroup): void {
+    const isActive = line.get('active')?.value === true;
+
     const units = parseFloat(line.get('units')?.value) || 0;
-    const pricePerUnit = parseFloat(line.get('pricePerUnit')?.value) || 0;
-    const newTotal = units * pricePerUnit;
-    // Only update if the computed total is different.
-    if (newTotal !== (parseFloat(line.get('totalPrice')?.value) || 0)) {
-      line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
-    }
+  const pricePerUnit = parseFloat(line.get('pricePerUnit')?.value) || 0;
+
+  const newTotal = isActive ? units * pricePerUnit : 0;
+
+  // Only update if the computed total is different.
+  const currentTotal = parseFloat(line.get('totalPrice')?.value) || 0;
+
+  if (newTotal !== currentTotal) {
+    line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
+  }
   }
 
   removeLine(index: number): void {
@@ -121,7 +128,8 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
     const itemFromConfig = this.quoteItemOptionsConfig.find(option => option.key === itemType);
     item.pricePerUnit = itemFromConfig?.base_price || 0;
     item.item = itemFromConfig?.label || item.item;
-    this.lines.push(this.createLine(true, item.item, item.unitType, item.units, item.pricePerUnit, item.totalPrice));
+    var unitTypeLabel = UnitTypeLabels[item.unitType as UnitType];
+    this.lines.push(this.createLine(true, item.item, unitTypeLabel, item.units, item.pricePerUnit, item.totalPrice));
   }
 
   // Resets the form and clears all lines.
@@ -147,18 +155,30 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
           this.quoteItemOptionsConfig = options;
 
           // Dynamically generate quoteItemOptions from config
-          this.quoteItemOptions = this.quoteItemOptionsConfig.map(config => ({
-            key: config.key,
-            label: `${config.label}`,
-            icon: config.icon,
-            command: () => this.addItem(config.key),
-          }));
+          this.buildOptionsMenu();
         },
         error: (err) => {
           // This error callback is optional since we handled errors in catchError.
           console.error("Error in loadConfiguration subscription", err);
         }
       });
+  }
+
+  private buildOptionsMenu() {
+    this.quoteItemOptions = this.quoteItemOptionsConfig.map(config => ({
+      key: config.key,
+      label: `${config.label}`,
+      icon: config.icon,
+      command: () => this.addItem(config.key),
+    }));
+
+    // Add another option - "Create Custom Item"
+    this.quoteItemOptions.push({
+      key: 'custom',
+      label: $localize`:@@quoteBuilder.customItemLabel: Add Additional Item`,
+      icon: 'pi pi-plus',
+      command: () => this.addItem(this.additionalItemLabel),
+    });
   }
 
   ngOnDestroy() {
