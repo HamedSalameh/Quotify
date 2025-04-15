@@ -107,16 +107,16 @@ export class QuoteBuilderComponent implements OnDestroy, OnInit {
     const isActive = line.get('active')?.value === true;
 
     const units = parseFloat(line.get('units')?.value) || 0;
-  const pricePerUnit = parseFloat(line.get('pricePerUnit')?.value) || 0;
+    const pricePerUnit = parseFloat(line.get('pricePerUnit')?.value) || 0;
 
-  const newTotal = isActive ? units * pricePerUnit : 0;
+    const newTotal = isActive ? units * pricePerUnit : 0;
 
-  // Only update if the computed total is different.
-  const currentTotal = parseFloat(line.get('totalPrice')?.value) || 0;
+    // Only update if the computed total is different.
+    const currentTotal = parseFloat(line.get('totalPrice')?.value) || 0;
 
-  if (newTotal !== currentTotal) {
-    line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
-  }
+    if (newTotal !== currentTotal) {
+      line.get('totalPrice')?.setValue(newTotal, { emitEvent: false });
+    }
   }
 
   removeLine(index: number): void {

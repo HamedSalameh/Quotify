@@ -1,12 +1,22 @@
-<div class="app-container">
-    <div class="app-header">
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="app-title" i18n>Quote Calculator</div>
+            <div class="logo">
+                <img src="assets/studiologo.png" alt="Logo" />
+            </div>
+            <div class="app-menu">
+                <a routerLink="/settings" routerLinkActive="active">
+                    <i class="ph ph-gear"></i>
+                </a>
+                <a routerLink="/quote-builder" routerLinkActive="active">
+                    <i class="ph ph-house"></i>
+                </a>
+            </div>
+        </div>
 
-        <img class="logo" src="assets/studiologo.png" alt="Logo" />
-
-        <p-menubar [model]="menuItems"></p-menubar>
+        <div class="app-nav"></div>
+        <div class="app-main"><router-outlet></router-outlet></div>
+        <div class="app-footer">Nada Salameh - Interior Design</div>
     </div>
-    <div class="content">
-        <router-outlet></router-outlet>
-    </div>
-
-</div>
+</body>

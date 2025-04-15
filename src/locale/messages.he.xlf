@@ -140,7 +140,7 @@
       </trans-unit>
       <trans-unit id="unitTypes.squareMeter" datatype="html">
         <source>Square Meter</source>
-        <target state="new">מ"ר</target>
+        <target state="new">מ&quot;ר</target>
       </trans-unit>
       <trans-unit id="unitTypes.linearMeter" datatype="html">
         <source>Linear Meter</source>
@@ -148,15 +148,19 @@
       </trans-unit>
       <trans-unit id="unitTypes.waterEndpoints" datatype="html">
         <source>Water Endpoints</source>
-        <target state="new">נק' מים</target>
+        <target state="new">נק&apos; מים</target>
       </trans-unit>
       <trans-unit id="unitTypes.electricalEndpoints" datatype="html">
         <source>Electrical Endpoints</source>
-        <target state="new">נק' חשמל</target>
+        <target state="new">נק&apos; חשמל</target>
       </trans-unit>
       <trans-unit id="unitTypes.number" datatype="html">
         <source>Number</source>
         <target state="new">כמות</target>
+      </trans-unit>
+      <trans-unit id="9016496590500091508" datatype="html">
+        <source>Quote Calculator</source>
+        <target state="new">מחשבון תמחור</target>
       </trans-unit>
     </body>
   </file>

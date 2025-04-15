@@ -119,6 +119,9 @@
       <trans-unit id="unitTypes.waterEndpoints" datatype="html">
         <source>Water Endpoints</source>
       </trans-unit>
+      <trans-unit id="9016496590500091508" datatype="html">
+        <source>Quote Calculator</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

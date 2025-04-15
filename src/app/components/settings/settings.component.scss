@@ -1,37 +1,26 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; // full-width layout is usually better for forms
-    gap: 1.5rem;
-    margin: 0 auto;
-  }
-  
-  .configuration-item {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 2rem;
-    padding: 1rem;
-  }
-  
-  .ci-key,
-  .ci-value,
-  .ci-label,
-  .ci-icon {
-    display: flex;
-    flex-direction: row;
+.configuration-item {
+  display: flex;
+  flex-wrap: wrap; // allow wrapping on smaller screens
+  gap: 1.5rem;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+  align-items: end;
+}
 
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  
-  .menu {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+.ci-key,
+.ci-value,
+.ci-label,
+.ci-icon {
+  flex: 1 1 250px; // allow shrinking and growing, and break at ~250px width
+  display: flex;
+  flex-direction: column; // stack label and input vertically for better layout
+  min-width: 20rem; // prevent shrinking too small
+  max-width: 20rem;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap; // wrap buttons on small screens
+  gap: 1rem;
+  justify-content: space-between;
+}
